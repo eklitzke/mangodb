@@ -1,5 +1,7 @@
 from gevent.server import StreamServer
 import os
+import socket
+import struct
 import threading
 
 
@@ -38,6 +40,8 @@ def mangodb(socket, address):
 
 
 if __name__ == '__main__':
-    server = StreamServer(('0.0.0.0', 27017), mangodb)
+    packed_addr = struct.pack('!L', socket.INADDR_ANY)
+    iface = socket.inet_ntoa(packed_addr)
+    server = StreamServer((iface, 27017), mangodb)
     print ('Starting MangoDB on port 27017')
     server.serve_forever()
